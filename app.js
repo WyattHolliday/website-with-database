@@ -1,33 +1,102 @@
-// app.js
-
-/*
-    SETUP
-*/
+const express = require('express');
 const exphbs = require('express-handlebars');
-const express = require('express');     // Import express-handlebars
 const { engine } = exphbs;
-var app     = express();            // We need to instantiate an express object to interact with the server in our code
-PORT        = 3331;                 // Set a port number at the top so it's easy to change in the future
 
-app.engine('.hbs', exphbs.engine({ extname: ".hbs" }));  // Create an instance of the handlebars engine to process templates
-app.set('view engine', '.hbs');                 // Tell express to use the handlebars engine whenever it encounters a *.hbs file.
+const app = express();
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(express.static('public'))
+const PORT = 3331;
 
-// Database
+app.engine('.hbs', engine({ extname: '.hbs' }));
+app.set('view engine', '.hbs');
+
+
 var db = require('./database/db-connector')
 
-/*
-    ROUTES
-*/
-// app.js 
-
 app.get('/', function(req, res)
-    {
-        res.render('index');                    // Note the call to render() and not send(). Using render() ensures the templating engine
-    });                                         // will process this file, before sending the finished HTML to the client.
+    {  
+        // Declare Query 1
+        let query1;
 
-/*
-    LISTENER
-*/
-app.listen(PORT, function(){            // This is the basic syntax for what is called the 'listener' which receives incoming requests on the specified PORT.
-    console.log('Express started on http://localhost:' + PORT + '; press Ctrl-C to terminate.')
-}); // Use 'hostname' to find localhost
+        if (req.query.award_title === undefined)
+        {
+            query1 = "SELECT * FROM Awards;";
+        }
+
+        // If there is a query string, we assume this is a search, and return desired results
+        else
+        {
+            query1 = `SELECT * FROM Awards WHERE award_title LIKE "${req.query.award_title}%"`
+        }
+
+
+        // Query 2 is the same in both cases
+        let query2 = "SELECT * FROM Actors;";
+        
+        let query3 = "SELECT * FROM Movies;";
+
+        // Run the 1st query
+        db.pool.query(query1, function(error, rows, fields){
+            
+            // Save the people
+            let Awards = rows;
+            
+            // Run the second query
+            db.pool.query(query2, (error, rows, fields) => {
+                
+                // Save the planets
+                let Actors = rows;
+
+                let actormap = {}
+                Actors.map(actor => {
+                    let id = parseInt(actor.id, 10);
+
+                    actormap[id] = actor["fname"];// + " " + actor["lname"];
+                })
+
+                // Overwrite the homeworld ID with the name of the planet in the people object
+                Awards = Awards.map(award => {
+                    return Object.assign(award, {actor_id: actormap[award.actor_id]})
+                })
+                
+                db.pool.query(query3, (error, rows, fields) => {
+                    let Movies = rows
+                    return res.render('index', {data: Awards, Actors: Actors, Movies: Movies});
+                })
+            })
+        })
+    }
+    );   
+
+// app.js
+
+app.post('/add-service-form', function(req, res){
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Streaming_Services (award_id, movie_id, actor_id, service, cost) VALUES ('${data['input-award_title']}', '${data['input-year_won']}', ${data['input-movie_id']}, ${data['input-actor_id']})`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+
+        // If there was no error, we redirect back to our root route, which automatically runs the SELECT * FROM bsg_people and
+        // presents it on the screen
+        else
+        {
+            res.redirect('/');
+        }
+    })
+})
+
+app.listen(PORT, function() {
+    console.log('Express started on http://localhost:' + PORT + '; press Ctrl-C to terminate.');
+});
