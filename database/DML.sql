@@ -8,10 +8,12 @@ INSERT INTO Movies_Actors (actor_id, movie_id) VALUES (actor_id_from_dropdown_In
 INSERT INTO Movies_Streaming_Services (movie_id , service_id) VALUES (:movie_id_from_dropdown_Input, :service_id_from_dropdown_Input);
 
 -- Select queries
-SELECT Streaming_Services.service FROM Streaming_Services;
-SELECT Movies.movie_name FROM Movies WHERE Movies.rating > 3;
-SELECT CONCAT(Actors.actor_fname, " ", Actors.actor_lname) FROM Actors;
-SELECT Awards.award_title, Awards.year_won FROM Awards ORDER BY Awards.year_won;
+SELECT * FROM Streaming_Services;
+SELECT * FROM Movies;
+SELECT * FROM Actors;
+SELECT * FROM Awards;
+SELECT * FROM Movies_Actors;
+SELECT * FROM Movies_Streaming_Services;
 
 -- Delete functions
 DELETE FROM Streaming_Services WHERE service_id = :service_id_Selected;

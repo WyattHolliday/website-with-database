@@ -136,11 +136,9 @@ app.delete('/delete-award-ajax/', function(req,res,next){
     let movie_id = parseInt(data.movie_id);
     let award_id = parseInt(data.award_id);
   
-    console.log(award_id)
 
     let queryUpdateMovie_id = `UPDATE Awards SET movie_id = ? WHERE Awards.award_id = ?`;
     let selectMovie_id = `SELECT * FROM Movies WHERE movie_id = ?`
-    console.log("check", movie_id, award_id)
   
           // Run the 1st query
           db.pool.query(queryUpdateMovie_id, [movie_id, award_id], function(error, rows, fields){
