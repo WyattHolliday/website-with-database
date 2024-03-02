@@ -17,7 +17,7 @@ updateAwardForm.addEventListener("submit", function (e) {
     let award_title_Value = input_award_title.value;
     let movie_id_Value = input_movie_id.value;
 
-    console.log(award_title_Value, movie_id_Value)
+    console.log(award_title_Value, movie_id_Value, "test")
 
     // currently the database table for bsg_people does not allow updating values to NULL
     // so we must abort if being bassed NULL for homeworld

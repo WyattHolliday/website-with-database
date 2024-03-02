@@ -134,14 +134,16 @@ app.delete('/delete-award-ajax/', function(req,res,next){
     let data = req.body;
   
     let movie_id = parseInt(data.movie_id);
-    let award = parseInt(data.fullname);
+    let award_id = parseInt(data.award_id);
   
-    let queryUpdateMovie_id = `UPDATE awards SET movie_id = ? WHERE awards.award_id = ?`;
+    console.log(award_id)
+
+    let queryUpdateMovie_id = `UPDATE Awards SET movie_id = ? WHERE Awards.award_id = ?`;
     let selectMovie_id = `SELECT * FROM Movies WHERE movie_id = ?`
-    console.log("check", movie_id, award)
+    console.log("check", movie_id, award_id)
   
           // Run the 1st query
-          db.pool.query(queryUpdateMovie_id, [movie_id, award], function(error, rows, fields){
+          db.pool.query(queryUpdateMovie_id, [movie_id, award_id], function(error, rows, fields){
               if (error) {
   
               // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
