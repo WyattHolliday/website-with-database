@@ -114,6 +114,22 @@ app.post('/add-award-form', function(req, res){
     })
 })
 
+app.delete('/delete-award-ajax/', function(req,res,next){
+    let data = req.body;
+    let award_id = parseInt(data.award_id);
+    let deleteAwards = `DELETE FROM Awards WHERE award_id = ?`;
+
+                // Run the  query
+    db.pool.query(deleteAwards, [award_id], function(error, rows, fields) {
+
+        if (error) {
+            console.log(error);
+            res.sendStatus(400);
+        } else {
+            res.sendStatus(204);
+        }
+  })});
+
 app.listen(PORT, function() {
     console.log('Express started on http://localhost:' + PORT + '; press Ctrl-C to terminate.');
 });

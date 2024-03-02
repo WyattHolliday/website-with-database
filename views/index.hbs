@@ -18,6 +18,7 @@
                 {{@key}}
             </th>
             {{/each}}
+            <th>Delete</th>
         </tr>
     </thead>
 
@@ -32,10 +33,12 @@
             <td>{{this.actor_id}}</td>
             <td>{{this.award_title}}</td>
             <td>{{this.Year_won}}</td>
+            <td><button onclick="deleteAward({{this.award_id}})">Delete</button></td>
         </tr>
         {{/each}}
     </tbody>
 </table>
+<script src="./js/delete_award.js"></script>
 
 <h2>Search Using an HTML Form</h2>
 <p>Search by award title using the field below. Partial names are OK too!</p>

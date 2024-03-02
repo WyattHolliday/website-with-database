@@ -1,18 +1,27 @@
-function deletePerson(award_id) {
+function deleteAward(award_id) {
     let link = '/delete-award-ajax/';
     let data = {
-      id: award_id
+      award_id: award_id
     };
-  
-    $.ajax({
-      url: link,
-      type: 'DELETE',
-      data: JSON.stringify(data),
-      contentType: "application/json; charset=utf-8",
-      success: function(result) {
-        deleteRow(award_id);
-      }
-    });
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("DELETE", "/delete-award-ajax", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+
+    // Tell our AJAX request how to resolve
+    xhttp.onreadystatechange = () => {
+        if (xhttp.readyState == 4 && xhttp.status == 204) {
+
+            // Add the new data to the table
+            deleteRow(award_id);
+
+        }
+        else if (xhttp.readyState == 4 && xhttp.status != 204) {
+            console.log("There was an error with the input.")
+        }
+    }
+    // Send the request and wait for the response
+    xhttp.send(JSON.stringify(data));
+    
   }
   
   function deleteRow(award_id){
