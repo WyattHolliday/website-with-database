@@ -50,9 +50,9 @@ app.get('/', function(req, res)
 
                 let actormap = {}
                 Actors.map(actor => {
-                    let id = parseInt(actor.id, 10);
+                    let id = parseInt(actor.actor_id, 10);
 
-                    actormap[id] = actor["fname"];// + " " + actor["lname"];
+                    actormap[id] = actor["actor_fname"] + " " + actor["actor_lname"];
                 })
 
                 // Overwrite the homeworld ID with the name of the planet in the people object
@@ -62,6 +62,19 @@ app.get('/', function(req, res)
                 
                 db.pool.query(query3, (error, rows, fields) => {
                     let Movies = rows
+
+                    let moviemap = {}
+                    Movies.map(movie => {
+                        let id = parseInt(movie.movie_id, 10);
+
+                        moviemap[id] = movie["movie_name"];
+                    })
+
+                    // Overwrite the homeworld ID with the name of the planet in the people object
+                    Awards = Awards.map(award => {
+                        return Object.assign(award, {movie_id: moviemap[award.movie_id]})
+                    })
+
                     return res.render('index', {data: Awards, Actors: Actors, Movies: Movies});
                 })
             })
@@ -71,13 +84,13 @@ app.get('/', function(req, res)
 
 // app.js
 
-app.post('/add-service-form', function(req, res){
+app.post('/add-award-form', function(req, res){
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
 
     // Create the query and run it on the database
-    query1 = `INSERT INTO Streaming_Services (award_id, movie_id, actor_id, service, cost) VALUES ('${data['input-award_title']}', '${data['input-year_won']}', ${data['input-movie_id']}, ${data['input-actor_id']})`;
+    query1 = `INSERT INTO Awards (award_title, movie_id, actor_id, year_won) VALUES ('${data['input-award_title']}', ${data['input-movie']}, ${data['input-actor']}, '${data['input-year_won']}')`;
     db.pool.query(query1, function(error, rows, fields){
 
         // Check to see if there was an error
