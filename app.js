@@ -88,6 +88,10 @@ app.post('/add-award-form', function(req, res){
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
+    let actor = parseInt(data['ïnput-actor']);
+    if (isNaN(actor)) {
+        actor = 'NULL'
+    }
 
     // Create the query and run it on the database
     query1 = `INSERT INTO Awards (award_title, movie_id, actor_id, year_won) VALUES ('${data['input-award_title']}', ${data['input-movie']}, ${data['input-actor']}, '${data['input-year_won']}')`;
