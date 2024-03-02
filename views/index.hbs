@@ -53,7 +53,7 @@
 <!-- /views/index.hbs -->
 <h2>Adding Data using an HTML form</h2>
 <p>To add a new award, please enter their information below nad click `Submit`!</p>
-<form id="add-award-form" method="POST" action="/add-award-form">
+<form id="add-award-form-ajax" method="POST" action="/add-award-form">
 
     <select name="input-movie" id="input-movie-ajax">
         <option value="">Select a Movie</option>
@@ -77,3 +77,27 @@
 
     <input type="submit">
 </form>
+{{!-- <script src="./js/add_award.js"></script> --}}
+
+<form id="update-award-form-ajax">
+
+    <label for="input_award_title">Award Title: </label>
+    <select name="input_award_title" id="mySelect">
+        <option value="test">Select an Award</option>
+        {{#each data}}
+        <option value="{{this.award_id}}">{{this.award_title}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input_movie_id">Movie: </label>
+    <select name="input_movie_id" id="input-movie_id-update">
+        <option>Select a Movie</option>
+        {{#each Movies}}
+        <option value="{{this.movie_id}}">{{this.movie_name}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+
+</form>
+
+<script src="./js/update_person.js"></script>

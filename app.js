@@ -55,7 +55,7 @@ app.get('/', function(req, res)
                     actormap[id] = actor["actor_fname"] + " " + actor["actor_lname"];
                 })
 
-                // Overwrite the homeworld ID with the name of the planet in the people object
+                // Overwrite the ID with the name of the planet in the people object
                 Awards = Awards.map(award => {
                     return Object.assign(award, {actor_id: actormap[award.actor_id]})
                 })
@@ -70,7 +70,7 @@ app.get('/', function(req, res)
                         moviemap[id] = movie["movie_name"];
                     })
 
-                    // Overwrite the homeworld ID with the name of the planet in the people object
+                    // Overwrite the ID with the name of the planet in the people object
                     Awards = Awards.map(award => {
                         return Object.assign(award, {movie_id: moviemap[award.movie_id]})
                     })
@@ -129,6 +129,87 @@ app.delete('/delete-award-ajax/', function(req,res,next){
             res.sendStatus(204);
         }
   })});
+
+  app.put('/put-award-ajax', function(req,res,next){
+    let data = req.body;
+  
+    let movie_id = parseInt(data.movie_id);
+    let award = parseInt(data.fullname);
+  
+    let queryUpdateMovie_id = `UPDATE awards SET movie_id = ? WHERE awards.award_id = ?`;
+    let selectMovie_id = `SELECT * FROM Movies WHERE movie_id = ?`
+    console.log("check", movie_id, award)
+  
+          // Run the 1st query
+          db.pool.query(queryUpdateMovie_id, [movie_id, award], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              // If there was no error, we run our second query and return that data so we can use it to update the people's
+              // table on the front-end
+              else
+              {
+                  // Run the second query
+                  db.pool.query(selectMovie_id, [movie_id], function(error, rows, fields) {
+  
+                      if (error) {
+                          console.log(error);
+                          res.sendStatus(400);
+                      } else {
+                          res.send(rows);
+                      }
+                  })
+              }
+  })});
+
+  app.post('/add-award-ajax', function(req, res) 
+{
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+    let actor_id = parseInt(data.actor_id);
+    if (isNaN(actor_id))
+    {
+        actor_id = 'NULL'
+    }
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Awards (award_title, movie_id, actor_id, year_won) VALUES ('${data.award_title}', '${data.movie}', ${actor_id}, ${data.year_won})`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+        else
+        {
+            // If there was no error, perform a SELECT * on bsg_people
+            query2 = `SELECT * FROM Awards;`;
+            db.pool.query(query2, function(error, rows, fields){
+
+                // If there was an error on the second query, send a 400
+                if (error) {
+                    
+                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                // If all went well, send the results of the query back.
+                else
+                {
+                    res.send(rows);
+                }
+            })
+        }
+    })
+});
 
 app.listen(PORT, function() {
     console.log('Express started on http://localhost:' + PORT + '; press Ctrl-C to terminate.');
