@@ -30,7 +30,7 @@ updateAwardForm.addEventListener("submit", function (e) {
 
     // Put our data we want to send in a javascript object
     let data = {
-        award_title: award_title_Value,
+        award_id: award_title_Value,
         movie_id: movie_id_Value,
     }
     
