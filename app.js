@@ -14,7 +14,81 @@ app.set('view engine', '.hbs');
 
 var db = require('./database/db-connector')
 
-app.get('/', function(req, res)
+app.get('/Index', function(req,res){
+    res.render('Index')
+})
+
+app.get('/Actors', function(req, res) {
+    const query = 'SELECT * FROM Actors';
+
+    db.pool.query(query, function(err, actors, fields) {
+        if (err) {
+            console.error('Error fetching actors:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        
+        res.render('Actors', { actors });
+    });
+});
+
+app.get('/Movies', function(req, res) {
+    const query = 'SELECT * FROM Actors';
+
+    db.pool.query(query, function(err, actors, fields) {
+        if (err) {
+            console.error('Error fetching actors:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        
+        res.render('Movies', { actors });
+    });
+});
+
+app.get('/Streaming_Services', function(req, res) {
+    const query = 'SELECT * FROM Actors';
+
+    db.pool.query(query, function(err, actors, fields) {
+        if (err) {
+            console.error('Error fetching actors:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        
+        res.render('Streaming_Services', { actors });
+    });
+});
+
+app.get('/Movies_Actors', function(req, res) {
+    const query = 'SELECT * FROM Actors';
+
+    db.pool.query(query, function(err, actors, fields) {
+        if (err) {
+            console.error('Error fetching actors:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        
+        res.render('Movies_Actors', { actors });
+    });
+});
+
+app.get('/Movie_Streaming_Services', function(req, res) {
+    const query = 'SELECT * FROM Actors';
+
+    db.pool.query(query, function(err, actors, fields) {
+        if (err) {
+            console.error('Error fetching actors:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        
+        res.render('Movie_Streaming_Services', { actors });
+    });
+});
+
+app.get('/Awards', function(req, res)
     {  
         // Declare Query 1
         let query1;
@@ -73,7 +147,7 @@ app.get('/', function(req, res)
                         return Object.assign(award, {movie_id: moviemap[award.movie_id]})
                     })
 
-                    return res.render('index', {data: Awards, Actors: Actors, Movies: Movies});
+                    return res.render('Awards', {data: Awards, Actors: Actors, Movies: Movies});
                 })
             })
         })
