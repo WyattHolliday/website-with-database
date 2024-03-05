@@ -21,6 +21,7 @@ function deleteAward(award_id) {
     }
     // Send the request and wait for the response
     xhttp.send(JSON.stringify(data));
+    location.reload()
     
   }
   

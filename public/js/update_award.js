@@ -76,4 +76,6 @@ function updateRow(data, award_id){
             td.innerHTML = parsedData[0].award_title; 
        }
     }
+    location.reload()
+
 }

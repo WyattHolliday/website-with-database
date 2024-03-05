@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-const PORT = 3331;
+const PORT = 3332;
 
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
@@ -41,7 +41,6 @@ app.get('/', function(req, res)
             
             // Save the people
             let Awards = rows;
-            
             // Run the second query
             db.pool.query(query2, (error, rows, fields) => {
                 
@@ -49,11 +48,10 @@ app.get('/', function(req, res)
                 let Actors = rows;
 
                 let actormap = {}
-                Actors.map(actor => {
-                    let id = parseInt(actor.actor_id, 10);
-
-                    actormap[id] = actor["actor_fname"] + " " + actor["actor_lname"];
-                })
+                    Actors.map(actor => {
+                        let id = parseInt(actor.actor_id, 10);
+                        actormap[id] = actor["actor_fname"] + " " + actor["actor_lname"];
+                    })
 
                 // Overwrite the ID with the name of the planet in the people object
                 Awards = Awards.map(award => {
@@ -118,7 +116,7 @@ app.delete('/delete-award-ajax/', function(req,res,next){
     let data = req.body;
     let award_id = parseInt(data.award_id);
     let deleteAwards = `DELETE FROM Awards WHERE award_id = ?`;
-
+    location.reload()
                 // Run the  query
     db.pool.query(deleteAwards, [award_id], function(error, rows, fields) {
 
@@ -139,7 +137,6 @@ app.delete('/delete-award-ajax/', function(req,res,next){
 
     let queryUpdateMovie_id = `UPDATE Awards SET movie_id = ? WHERE Awards.award_id = ?`;
     let selectMovie_id = `SELECT * FROM Movies WHERE movie_id = ?`
-  
           // Run the 1st query
           db.pool.query(queryUpdateMovie_id, [movie_id, award_id], function(error, rows, fields){
               if (error) {
