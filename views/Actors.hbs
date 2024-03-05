@@ -1,94 +1,88 @@
+<!-- index.hbs -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-<body>
-    <header>
-    </header>
 
-    <h1> Actors Table </h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Actor ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Vin</td>
-                <td>Diesel</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Brad</td>
-                <td>Pitt</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Al</td>
-                <td>Pacino</td>
-            </tr>
-        </tbody>
-    </table>
 
-    <h2>Add an Actor</h2>
-    <form>
-        <label>First Name:</label><br>
-        <input type="text"></input><br>
+{{!-- Create a table --}}
+<table>
 
-        <label>Last Name:</label><br>
-        <input type="text"></input><br><br>
+    {{!-- Header section --}}
+    <thead>
 
-        <button>
-            Confirm
-        </button>
-    </form>
-    <h2>Update an Actor</h2>
-    <form>
-        <label> Actor </label>
-        <select>
-            <option>
-                Vin Diesel
-            </option>
-            <option>
-                Brad Pitt
-            </option>
-            <option>
-                Al Pacino
-            </option>
-        </select> <br>
-        <label>First Name:</label><br>
-        <input type="text"></input><br>
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+            <th>Delete</th>
+        </tr>
+    </thead>
 
-        <label>Last Name:</label><br>
-        <input type="text"></input><br><br>
+    {{!-- Body section --}}
+    <tbody>
 
-        <button>
-            Update
-        </button>
-        <button>
-            Cancel
-        </button>
-    </form>
-    <h2>Delete an Actor</h2>
-    <form>
-        <label> Actor </label>
-        <select>
-            <option>
-                Vin Diesel
-            </option>
-            <option>
-                Brad Pitt
-            </option>
-            <option>
-                Al Pacino
-            </option>
-        </select> <br> <br>
-        <button>
-            Delete
-        </button>
-        <button>
-            Cancel
-        </button>
-    </form>
-</body>
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.actor_id}}</td>
+            <td>{{this.actor_fname}}</td>
+            <td>{{this.actor_lname}}</td>
+            <td><button onclick="deleteActor({{this.actor_id}})">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<script src="./js/delete_actor.js"></script>
+
+<h2>Search Using an HTML Form</h2>
+<p>Search for Actor name by using the field below. Partial names are OK too!</p>
+<form id="search-actor-html" method='GET' action='/Actors'>
+    <label for="input-lname">Search by Actor Last Name: </label>
+    <input type="text" name="lname" id="input-lname-html-search">
+    
+    <input type="submit">
+    <a href='/Actors'><button>Reset</button></a>
+</form>
+
+
+
+<!-- /views/index.hbs -->
+<h2>Adding Data using an HTML form</h2>
+<p>To add a new award, please enter their information below nad click `Submit`!</p>
+<form id="add-actor-form-ajax" method="POST" action="/add-actor-form">
+
+    <label for="input-fname">First Name: </label>
+    <input type="text" name="input-fname" id="input-fname">
+    
+    <label for="input-lname">Last Name: </label>
+    <input type="text" name="input-lname" id="input-lname">
+
+    <input type="submit">
+</form>
+<script src="./js/add_award.js"></script>
+
+<h2>Updating Award using Ajax</h2>
+<form id="update-award-form-ajax">
+    <label for="input_award_title">Award Title: </label>
+    <select name="input_award_title" id="mySelect">
+        <option value="test">Select an Award</option>
+        {{#each data}}
+        <option value="{{this.award_id}}">{{this.award_title}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input_movie_id">Movie: </label>
+    <select name="input_movie_id" id="input-movie_id-update">
+        <option>Select a Movie</option>
+        {{#each Movies}}
+        <option value="{{this.movie_id}}">{{this.movie_name}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+
+</form>
+
+<script src="./js/update_award.js"></script>
