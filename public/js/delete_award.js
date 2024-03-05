@@ -13,6 +13,7 @@ function deleteAward(award_id) {
 
             // Add the new data to the table
             deleteRow(award_id);
+            location.reload()
 
         }
         else if (xhttp.readyState == 4 && xhttp.status != 204) {
@@ -22,6 +23,7 @@ function deleteAward(award_id) {
     // Send the request and wait for the response
     xhttp.send(JSON.stringify(data));
     location.reload()
+
     
   }
   

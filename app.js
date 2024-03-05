@@ -116,7 +116,6 @@ app.delete('/delete-award-ajax/', function(req,res,next){
     let data = req.body;
     let award_id = parseInt(data.award_id);
     let deleteAwards = `DELETE FROM Awards WHERE award_id = ?`;
-    location.reload()
                 // Run the  query
     db.pool.query(deleteAwards, [award_id], function(error, rows, fields) {
 
@@ -126,6 +125,7 @@ app.delete('/delete-award-ajax/', function(req,res,next){
         } else {
             res.sendStatus(204);
         }
+        
   })});
 
   app.put('/put-award-ajax', function(req,res,next){
