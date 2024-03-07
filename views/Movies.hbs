@@ -7,155 +7,92 @@
 
     </header>
     <h1> Movies Table </h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        Movie ID
-                    </th>
-                    <th>
-                        Movie
-                    </th>
-                    <th>
-                        Rating
-                    </th>
-                    <th>
-                        Genre
-                    </th>
-                    <th>
-                        Minutes
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        Fast and Fuirous
-                    </td>
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        Action
-                    </td>
-                    <td>
-                        125
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        Fight Club
-                    </td>
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        Psychological
-                    </td>
-                    <td>
-                        122
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        The Godfather
-                    </td>
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        Crime
-                    </td>
-                    <td>
-                        180
-                    </td>
-                </tr>
-            </tbody>
+    <table>
+        <thead>
+            <tr>
+                {{#each data.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{#each data}}
+        <tr>
+            <td>{{this.movie_id}}</td>
+            <td>{{this.movie_name}}</td>
+            <td>{{this.rating}}</td>
+            <td>{{this.genre}}</td>
+            <td>{{this.minute}}</td>
+            <td>{{this.additional_cost}}</td>
+            <td><button onclick="deleteMovie({{this.movie_id}})">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+    </table>
+    <script src="./js/delete_movie.js"></script>
 
-        </table>
-        <h2>Add a Movie</h2>
-        <form>
-            <label>Movie Name:</label><br>
-            <input type="text"></input><br>
-    
-            <label>Movie Rating:</label><br>
-            <input type="text"></input><br>
-
-            <label>Movie Genre:</label><br>
-            <input type="text"></input><br>
-    
-            <label>Movie Runtime:</label><br>
-            <input type="text"></input><br><br>
-
-            <button>
-                Confirm
-            </button>
-
-            <h2>Update a Movie</h2>
-            <form>
-                <label> Movie</label>
-                <select>
-                <option>
-                    Godfather
-                </option>
-                <option>
-                    Fast and Furious
-                </option>
-                <option>
-                    Fight Club
-                </option>
-                </select> <br>
-                <label>Movie Name:</label><br>
-                <input type="text"></input><br>
-
-                <label>Rating:</label><br>
-                <input type="text"></input><br>
-
-                <label>Movie Genre:</label><br>
-                <input type="text"></input><br>
+    <h2>Search Using an HTML Form</h2>
+    <p>Search by movie title using the field below. Partial names are OK too!</p>
+    <form id="search-movie-html" method='GET' action='/Movies'>
+        <label for="input-movie_title">Search by Movie Title: </label>
+        <input type="text" name="movie_title" id="input-movie_title-html-search">
         
-                <label>Movie Runtime:</label><br>
-                <input type="text"></input><br><br>
+        <input type="submit">
+        <a href='/Movies'><button>Reset</button></a>
+    </form>
+
+    <h2>Adding Data using an HTML form</h2>
+    <p>To add a new movie, please enter their information below and click `Submit`!</p>
+    <form id="add-movie-form-ajax" method="POST" action="/add-movie-form">
+
+        <label for="input-movie_name">Title: </label>
+        <input type="text" name="input-movie_name" id="input-movie_name">
         
-                <button>
-                    Update
-                </button>
-                <button>
-                    Cancel
-                </button>
-            </form>
+        <label for="input-rating">Rating: </label>
+        <input type="text" name="input-rating" id="input-rating">
 
-            <h2>Delete a Movie</h2>
-            <form>
-                <label> Movie </label>
-                <select>
-                <option>
-                    The Godfather
-                </option>
-                <option>
-                    Fast and Furious
-                </option>
-                <option>
-                    Fight Club
-                </option> 
-            </select> <br> <br>
-                <button>
-                    Delete
-                </button>
-                <button>
-                    Cancel
-                </button>
-            </form>
-        </form>
+        <label for="input-genre">Genre: </label>
+        <input type="text" name="input-genre" id="input-genre">
+        
+        <label for="input-minute">Run Time: </label>
+        <input type="text" name="input-minute" id="input-minute">
+        
+        <label for="input-additional_cost">Price: </label>
+        <input type="text" name="input-additional_cost" id="input-additional_cost">
+        
+        <input type="submit">
+    </form>
+    
+    <h2>Updating Movie using Ajax</h2>
+    <form id="update-movie-form-ajax">
+        <label for="input_movie_title">Movie Title: </label>
+        <select name="input_movie_title" id="mySelect">
+            <option value="select">Select an Movie</option>
+            {{#each data}}
+            <option value="{{this.movie_id}}">{{this.movie_name}}</option>
+            {{/each}}
+        </select>
 
+        <label for="input-movie_name">Title: </label>
+        <input type="text" name="input-movie_name" id="update-input-movie_name">
+        
+        <label for="input-rating">Rating: </label>
+        <input type="text" name="input-rating" id="update-input-rating">
 
+        <label for="input-genre">Genre: </label>
+        <input type="text" name="input-genre" id="update-input-genre">
+        
+        <label for="input-minute">Run Time: </label>
+        <input type="text" name="input-minute" id="update-input-minute">
+        
+        <label for="input-additional_cost">Price: </label>
+        <input type="text" name="input-additional_cost" id="update-input-additional_cost">
+
+        <input type="submit">
+
+    </form>
+    <script src="./js/update_movie.js"></script>
 </body>
