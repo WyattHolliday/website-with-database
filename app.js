@@ -18,19 +18,7 @@ app.get('/Index', function(req,res){
     res.render('Index')
 })
 
-app.get('/Actors', function(req, res) {
-    const query = 'SELECT * FROM Actors';
 
-    db.pool.query(query, function(err, actors, fields) {
-        if (err) {
-            console.error('Error fetching actors:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-        
-        res.render('Actors', { actors });
-    });
-});
 
 app.get('/Movies', function(req, res) {
     let query1;
@@ -132,19 +120,6 @@ app.get('/Streaming_Services', function(req, res) {
     });
 });
 
-app.get('/Movies_Actors', function(req, res) {
-    const query = 'SELECT * FROM Actors';
-
-    db.pool.query(query, function(err, actors, fields) {
-        if (err) {
-            console.error('Error fetching actors:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-        
-        res.render('Movies_Actors', { actors });
-    });
-});
 
 app.get('/Movie_Streaming_Services', function(req, res) {
     const query = 'SELECT * FROM Actors';
@@ -253,7 +228,7 @@ app.post('/add-award-form', function(req, res){
         // presents it on the screen
         else
         {
-            res.redirect('/');
+            res.redirect('/Awards');
         }
     })
 })
@@ -353,6 +328,87 @@ app.delete('/delete-award-ajax/', function(req,res,next){
         }
     })
 });
+
+
+
+
+
+//THIS SECTION FOR ACTORS
+
+app.get('/Actors', function(req, res) {
+    let query1 
+    
+    if (req.query.lname === undefined)
+    {
+        query1 = "SELECT * FROM Actors;";
+    }
+
+    // If there is a query string, we assume this is a search, and return desired results
+    else
+    {
+        query1 = `SELECT * FROM Actors WHERE actor_lname LIKE "${req.query.lname}%"`
+    }// Define our query
+
+    // Run the 1st query
+    // db.pool.query(query1, function(error, rows, fields){
+        
+    //     // Save the people
+    //     let Actors = rows;
+
+    //     return res.render('index', {data: Actors});
+    // })
+        
+
+
+    db.pool.query(query1, function(error, rows, fields){    // Execute the query
+
+        res.render('Actors', {data: rows});                  // Render the index.hbs file, and also send the renderer
+    })  
+
+});
+
+app.delete('/delete-actor-ajax/', function(req,res,next){
+    let data = req.body;
+    let actor_id = parseInt(data.actor_id);
+    let deleteActors = `DELETE FROM Actors WHERE actor_id = ?`;
+                // Run the  query
+    db.pool.query(deleteActors, [actor_id], function(error, rows, fields) {
+
+        if (error) {
+            console.log(error);
+            res.sendStatus(400);
+        } else {
+            res.sendStatus(204);
+        }
+        
+  })});
+
+app.post('/add-actor-form', function(req, res){
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Actors (actor_fname, actor_lname) VALUES ('${data['input-fname']}', '${data['input-lname']}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+
+        // If there was no error, we redirect back to our root route, which automatically runs the SELECT * FROM bsg_people and
+        // presents it on the screen
+        else
+        {
+            res.redirect('/Actors');
+        }
+    })
+})
+
 
 app.listen(PORT, function() {
     console.log('Express started on http://localhost:' + PORT + '; press Ctrl-C to terminate.');
