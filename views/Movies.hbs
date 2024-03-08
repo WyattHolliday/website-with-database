@@ -30,8 +30,7 @@
     </table>
     <script src="./js/delete_movie.js"></script>
 
-    <h2>Search Using an HTML Form</h2>
-    <p>Search by movie title using the field below. Partial names are OK too!</p>
+    <h3>Search by movie title using the field below. Partial names are OK too!</h3>
     <form id="search-movie-html" method='GET' action='/Movies'>
         <label for="input-movie_title">Search by Movie Title: </label>
         <input type="text" name="movie_title" id="input-movie_title-html-search">
@@ -40,8 +39,7 @@
         <a href='/Movies'><button>Reset</button></a>
     </form>
 
-    <h2>Adding Data using an HTML form</h2>
-    <p>To add a new movie, please enter their information below and click `Submit`!</p>
+    <h3>To add a new movie, please enter their information below and click `Submit`!</h3>
     <form id="add-movie-form-ajax" method="POST" action="/add-movie-form">
 
         <label for="input-movie_name">Title: </label>
@@ -62,7 +60,7 @@
         <input type="submit">
     </form>
     
-    <h2>Updating Movie using Ajax</h2>
+    <h3>To update a Movie select one then fill out all the information</h3>
     <form id="update-movie-form-ajax">
         <label for="input_movie_title">Movie Title: </label>
         <select name="input_movie_title" id="mySelect">

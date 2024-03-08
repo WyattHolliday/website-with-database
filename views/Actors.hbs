@@ -1,6 +1,6 @@
 <!-- index.hbs -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
+<h1>Actors Table</h1>
 
 
 {{!-- Create a table --}}
@@ -37,8 +37,7 @@
 </table>
 <script src="./js/delete_actor.js"></script>
 
-<h2>Search Using an HTML Form</h2>
-<p>Search for Actor name by using the field below. Partial names are OK too!</p>
+<h3>Search for Actor name by using the field below. Partial names are OK too!</h3>
 <form id="search-actor-html" method='GET' action='/Actors'>
     <label for="input-lname">Search by Actor Last Name: </label>
     <input type="text" name="lname" id="input-lname-html-search">
@@ -50,8 +49,7 @@
 
 
 <!-- /views/index.hbs -->
-<h2>Adding Data using an HTML form</h2>
-<p>To add a new award, please enter their information below and click `Submit`!</p>
+<h3>To add a new award, please enter their information below and click `Submit`!</h3>
 <form id="add-actor-form-ajax" method="POST" action="/add-actor-form">
 
     <label for="input-fname">First Name: </label>
@@ -64,7 +62,7 @@
 </form>
 {{!-- <script src="./js/add_award.js"></script> --}}
 
-<h2>Updating Actor Names</h2>
+<h2>To update an Actor select one then fill out all the information</h2>
 <form id="update-actor-form-ajax">
     <label for="input_actor_id">Actor ID: </label>
     <select name="input_actor_id" id="actor_id">
