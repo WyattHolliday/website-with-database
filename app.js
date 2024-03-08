@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-const PORT = 3333;
+const PORT = 3332;
 
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
@@ -116,6 +116,9 @@ app.delete('/delete-movie-ajax/', function(req,res,next){
     let genre = data.genre;
     let minute = parseInt(data.minute);
     let additional_cost = parseInt(data.additional_cost);
+    if (isNaN(additional_cost)) {
+        additional_cost = 'NULL'
+    }
 
     let queryUpdateMovie_id = `UPDATE Movies SET movie_name = ?, rating = ?, genre = ?, minute = ?, additional_cost = ? WHERE Movies.movie_id = ?`;
           // Run the 1st query
@@ -351,12 +354,14 @@ app.delete('/delete-award-ajax/', function(req,res,next){
   
     let movie_id = parseInt(data.movie_id);
     let award_id = parseInt(data.award_id);
-  
+    let actor_id = parseInt(data.actor_id);
+    let award_title = data.award_title;
+    let year_won = parseInt(data.year_won);
 
-    let queryUpdateMovie_id = `UPDATE Awards SET movie_id = ? WHERE Awards.award_id = ?`;
+    let queryUpdateMovie_id = `UPDATE Awards SET movie_id = ?, actor_id = ?, award_title = ?, Year_won = ? WHERE Awards.award_id = ?`;
     let selectMovie_id = `SELECT * FROM Movies WHERE movie_id = ?`
           // Run the 1st query
-          db.pool.query(queryUpdateMovie_id, [movie_id, award_id], function(error, rows, fields){
+          db.pool.query(queryUpdateMovie_id, [movie_id, actor_id, award_title, year_won, award_id], function(error, rows, fields){
               if (error) {
   
               // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.

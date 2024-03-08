@@ -9,12 +9,18 @@ updateAwardForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
     // Get form fields we need to get data from
-    let input_award_title = document.getElementById("mySelect");
+    let input_award_id = document.getElementById("mySelect");
     let input_movie_id = document.getElementById("input-movie_id-update");
+    let input_actor_id = document.getElementById("input-actor_id-update");
+    let input_award_title = document.getElementById("input-award_title-update");
+    let input_year_won = document.getElementById("input-year_won-update");
 
     // Get the values from the form fields
-    let award_title_Value = input_award_title.value;
+    let award_id_Value = input_award_id.value;
     let movie_id_Value = input_movie_id.value;
+    let actor_id_Value = input_actor_id.value;
+    let award_title_Value = input_award_title.value;
+    let year_won_Value = input_year_won.value;
 
 
     // currently the database table for bsg_people does not allow updating values to NULL
@@ -28,8 +34,11 @@ updateAwardForm.addEventListener("submit", function (e) {
 
     // Put our data we want to send in a javascript object
     let data = {
-        award_id: award_title_Value,
+        award_id: award_id_Value,
         movie_id: movie_id_Value,
+        actor_id: actor_id_Value,
+        award_title: award_title_Value,
+        year_won: year_won_Value
     }
     
     // Setup our AJAX request
@@ -52,7 +61,7 @@ updateAwardForm.addEventListener("submit", function (e) {
 
     // Send the request and wait for the response
     xhttp.send(JSON.stringify(data));
-    location.reload()
+    // location.reload()
 
 })
 
