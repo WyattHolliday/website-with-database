@@ -1,170 +1,78 @@
-
 <body>
     <header>
 
     </header>
-    <h1> Movies-Streaming Services Intersection Table </h1>
-    <table>
+    <h1> Movies Streaming Services Intersection Table </h1>
+    <table id="movie-streaming-service-table">
         <thead>
             <tr>
+                {{#each data.[0]}}
                 <th>
-                    Movies Streaming Services ID
+                    {{@key}}
                 </th>
-                <th>
-                    movie ID
-                </th>
-                <th>
-                    streaming service ID
-                </th>
+                {{/each}}
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    1
-                </td>
-                <td>
-                    1
-                </td>
-                <td>
-                    1
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    2
-                </td>
-                <td>
-                    2
-                </td>
-                <td>
-                    2
-                </td>
-
-            </tr>
-            <tr>
-                <td>
-                    3
-                </td>
-                <td>
-                    3
-                </td>
-                <td>
-                    3
-                </td>
-
-            </tr>
-        </tbody>
-
+        {{#each data}}
+        <tr>
+            <td>{{this.movies_streaming_services_id}}</td>
+            <td>{{this.movie_id}}</td>
+            <td>{{this.service_id}}</td>
+            <td><button onclick="deleteMovieStreamingService({{this.movies_streaming_services_id}})">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
     </table>
+    <script src="./js/delete_movie_streaming_service.js"></script>
 
+    <h2>Adding intersection using an HTML form</h2>
+    <p>To add a new intersection, please enter their information below and click `Submit`!</p>
+    <form id="add-movie_streaming_service-form-ajax" method="POST" action="/add-movie_streaming_service-form">
 
+        <select name="input_movie" id="mySelect-add-movie">
+            <option value="select">Select a Movie</option>
+            {{#each Movie}}
+            <option value="{{this.movie_id}}">{{this.movie_name}}</option>
+            {{/each}}
+        </select>
 
+        <select name="input_service" id="mySelect-add-service">
+            <option value="select">Select a Streaming Service</option>
+            {{#each Streaming_Services}}
+            <option value="{{this.service_id}}">{{this.service}}</option>
+            {{/each}}
+        </select>
+        
+        <input type="submit">
+    </form>
+    
+    <h2>Updating intersection using Ajax</h2>
+    <form id="update-movie-streaming-service-form-ajax">
+        <label for="input_movie_Streaming_Service_title">Movie Title: </label>
 
-    <h2>Add an Intersection</h2>
-    <form>
-        <label> Movie </label>
-        <select>
-            <option>
-                Fast and Fuirous
-            </option>
-            <option>
-                Fight Club
-            </option>
-            <option>
-                The Godfather
-            </option>
-        </select> <br>
+        <select name="input_movie_streaming_service_title" id="mySelect-update-movie-streaming-service">
+            <option value="select">Select an Intersection</option>
+            {{#each data}}
+            <option value="{{this.movies_streaming_services_id}}">{{this.movie_id}} - {{this.service_id}}</option>
+            {{/each}}
+        </select>
 
-        <label> Streaming Services </label>
-        <select>
-            <option>
-                Flixnet
-            </option>
-            <option>
-                Stream+
-            </option>
-            <option>
-                PearTV
-            </option>
-        </select> <br>
+        <select name="input_movie" id="mySelect-update-movie">
+            <option value="select">Select a Movie</option>
+            {{#each Movie}}
+            <option value="{{this.movie_id}}">{{this.movie_name}}</option>
+            {{/each}}
+        </select>
 
-        <button>
-            Confirm
-        </button>
-
-
-
-
-
-        <h2>Update Intersection</h2>
-        <form>
-
-            <label> Movie Streaming Service </label>
-            <select>
-                <option>
-                    1
-                </option>
-                <option>
-                    2
-                </option>
-                <option>
-                    3
-                </option>
-            </select> <br>
-
-            <label> Movie </label>
-            <select>
-                <option>
-                    Flixnet
-                </option>
-                <option>
-                    Stream+
-                </option>
-                <option>
-                    PearTV
-                </option>
-            </select> <br>
-
-            <label> Streaming Serivce </label>
-            <select>
-                <option>
-                    Flixnet
-                </option>
-                <option>
-                    Stream+
-                </option>
-                <option>
-                    PearTV
-                </option>
-            </select> <br>
-
-            <button>
-                Update
-            </button>
-        </form>
-
-        <h2>Delete an Intersection</h2>
-        <form>
-            <form>
-                <label> Movies Streaming Service </label>
-                <select>
-                    <option>
-                        1
-                    </option>
-                    <option>
-                        2
-                    </option>
-                    <option>
-                        3
-                    </option>
-                </select><br><br>
-                <button>
-                    Delete
-                </button>
-
-            </form>
-
-        </form>
-
+        <select name="input_service" id="mySelect-update-service">
+            <option value="select">Select a Streaming Service</option>
+            {{#each Streaming_Services}}
+            <option value="{{this.service_id}}">{{this.service}}</option>
+            {{/each}}
+        </select>
+        <input type="submit">
+    </form>
+    <script src="./js/update_movie_streaming_services.js"></script>
 </body>

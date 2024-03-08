@@ -42,7 +42,7 @@ app.post('/add-movie-form', function(req, res){
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
-    let movie = parseInt(data['ïnput-movie']);
+    let movie = parseInt(data['Input-movie']);
     if (isNaN(movie)) {
         movie = 'NULL'
     }
@@ -71,18 +71,41 @@ app.post('/add-movie-form', function(req, res){
 app.delete('/delete-movie-ajax/', function(req,res,next){
     let data = req.body;
     let movie_id = parseInt(data.movie_id);
+    let deleteIntersection1 = `DELETE FROM Movies_Streaming_Services WHERE movie_id = ?`;
+    let deleteIntersection2 = `DELETE FROM Movies_Actors WHERE movie_id = ?`;
+    let deleteM1 = `DELETE FROM Awards WHERE movie_id = ?`; // Awards must have a movie
     let deleteMovie = `DELETE FROM Movies WHERE movie_id = ?`;
                 // Run the  query
-    db.pool.query(deleteMovie, [movie_id], function(error, rows, fields) {
-
+    db.pool.query(deleteM1, [movie_id], function(error, rows, fields) {
         if (error) {
             console.log(error);
             res.sendStatus(400);
         } else {
-            res.sendStatus(204);
+            db.pool.query(deleteIntersection1, [movie_id], function(error, rows, fields) {
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                } else {
+                    db.pool.query(deleteIntersection2, [movie_id], function(error, rows, fields) {
+                        if (error) {
+                            console.log(error);
+                            res.sendStatus(400);
+                        } else {
+                        db.pool.query(deleteMovie, [movie_id], function(error, rows, fields) {
+                            if (error) {
+                                console.log(error);
+                                res.sendStatus(400);
+                            } else {
+                                res.sendStatus(204);
+                            }
+                        })}
+                    })
+                }
+            })}
         }
-        
-  })});
+    )}
+);
+    
 
   app.put('/put-movie-ajax', function(req,res,next){
     let data = req.body;
@@ -122,18 +145,105 @@ app.get('/Streaming_Services', function(req, res) {
 
 
 app.get('/Movie_Streaming_Services', function(req, res) {
-    const query = 'SELECT * FROM Actors';
+    const queryMSS = "SELECT * FROM Movies_Streaming_Services;";
+    const queryM = "SELECT * FROM Movies;";
+    const querySS = "SELECT * FROM Streaming_Services;";
 
-    db.pool.query(query, function(err, actors, fields) {
-        if (err) {
-            console.error('Error fetching actors:', err);
-            res.status(500).send('Internal Server Error');
-            return;
+    db.pool.query(queryMSS, function(error, rows, fields){
+        let Movies_Streaming_Services = rows;
+        db.pool.query(queryM, function(error, rows, fields){
+            let Movies = rows;
+            let moviemap = {}
+            Movies.map(movie => {
+                let id = parseInt(movie.movie_id, 10);
+                moviemap[id] = movie["movie_name"];
+            })
+            // console.log("moviemap", moviemap)
+            Movies_Streaming_Services = Movies_Streaming_Services.map(movies_streaming_services => {
+                return Object.assign(movies_streaming_services, {movie_id: moviemap[movies_streaming_services.movie_id]})
+            })
+            db.pool.query(querySS, function(error, rows, fields){
+                let Streaming_Services = rows;
+                let servicemap = {}
+                Streaming_Services.map(service => {
+                    let id = parseInt(service.service_id, 10);
+                    servicemap[id] = service["service"];
+                })
+                // console.log("servicemap", servicemap)
+                Movies_Streaming_Services = Movies_Streaming_Services.map(movies_streaming_services => {
+                    return Object.assign(movies_streaming_services, {service_id: servicemap[movies_streaming_services.service_id]})
+                })
+                // console.log("Movies", Movies, "Streaming_Services", Streaming_Services,)
+                return res.render('Movie_Streaming_Services', {
+                    data: Movies_Streaming_Services,
+                    Movie: Movies,
+                    Streaming_Services: Streaming_Services
+                });
+            })
+        })
+    })
+});
+
+app.post('/add-movie_streaming_service-form', function(req, res){
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Movies_Streaming_Services (movie_id, service_id) VALUES ('${data.input_movie}', '${data.input_service}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+
+        // If there was no error, we redirect back to our root route, which automatically runs the SELECT * FROM bsg_people and
+        // presents it on the screen
+        else
+        {
+            res.redirect('/Movie_Streaming_Services');
+        }
+    })
+})
+
+app.delete('/delete-movie-streaming-service-ajax', function(req,res,next){
+    let data = req.body;
+    let movies_streaming_services_id = parseInt(data.movies_streaming_services_id);
+    let deleteMovieStreamingService = `DELETE FROM Movies_Streaming_Services WHERE movies_streaming_services_id = ?`;
+                // Run the  query
+    db.pool.query(deleteMovieStreamingService, [movies_streaming_services_id], function(error, rows, fields) {
+
+        if (error) {
+            console.log(error);
+            res.sendStatus(400);
+        } else {
+            res.sendStatus(204);
         }
         
-        res.render('Movie_Streaming_Services', { actors });
-    });
-});
+  })});
+
+app.put('/put-movie-streaming-service-ajax', function(req,res,next){
+    let data = req.body;
+    
+    let movie_id = parseInt(data.movie_id);
+    let service_id = parseInt(data.service_id);
+    let movie_streaming_service_id = parseInt(data.movie_streaming_service_id);
+
+    let queryUpdateMovieStreamingService_id = `UPDATE Movies_Streaming_Services SET movie_id = ?, service_id = ? WHERE Movies_Streaming_Services.movies_streaming_services_id = ?`;
+          // Run the 1st query
+        db.pool.query(queryUpdateMovieStreamingService_id, [movie_id, service_id, movie_streaming_service_id], function(error, rows, fields){
+            if (error) {
+                // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                console.log(error);
+                res.sendStatus(400);
+            } else {
+                console.log("sending rows", rows)
+                res.send(rows);
+            }
+  })});
 
 app.get('/Awards', function(req, res)
     {  
@@ -329,10 +439,6 @@ app.delete('/delete-award-ajax/', function(req,res,next){
     })
 });
 
-
-
-
-
 //THIS SECTION FOR ACTORS
 
 app.get('/Actors', function(req, res) {
@@ -357,8 +463,6 @@ app.get('/Actors', function(req, res) {
 
     //     return res.render('index', {data: Actors});
     // })
-        
-
 
     db.pool.query(query1, function(error, rows, fields){    // Execute the query
 
@@ -371,17 +475,32 @@ app.delete('/delete-actor-ajax/', function(req,res,next){
     let data = req.body;
     let actor_id = parseInt(data.actor_id);
     let deleteActors = `DELETE FROM Actors WHERE actor_id = ?`;
+    let deleteIntersection = `DELETE FROM Movies_Actors WHERE actor_id = ?`;
+    let removeM1 = `UPDATE Awards SET actor_id = NULL WHERE actor_id = ?`;
                 // Run the  query
-    db.pool.query(deleteActors, [actor_id], function(error, rows, fields) {
-
+    db.pool.query(removeM1, [actor_id], function(error, rows, fields) {
         if (error) {
             console.log(error);
             res.sendStatus(400);
         } else {
-            res.sendStatus(204);
+            db.pool.query(deleteIntersection, [actor_id], function(error, rows, fields) {
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                } else {
+                    db.pool.query(deleteActors, [actor_id], function(error, rows, fields) {
+                        if (error) {
+                            console.log(error);
+                            res.sendStatus(400);
+                        } else {
+                            res.sendStatus(204);
+                        }
+                    })
+                }
+            })
         }
-        
-  })});
+    })
+  });
 
 app.post('/add-actor-form', function(req, res){
     // Capture the incoming data and parse it back to a JS object
