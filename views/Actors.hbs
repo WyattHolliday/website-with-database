@@ -62,27 +62,27 @@
 
     <input type="submit">
 </form>
-<script src="./js/add_award.js"></script>
+{{!-- <script src="./js/add_award.js"></script> --}}
 
-<h2>Updating Award using Ajax</h2>
-<form id="update-award-form-ajax">
-    <label for="input_award_title">Award Title: </label>
-    <select name="input_award_title" id="mySelect">
-        <option value="test">Select an Award</option>
+<h2>Updating Actor Names</h2>
+<form id="update-actor-form-ajax">
+    <label for="input_actor_id">Actor ID: </label>
+    <select name="input_actor_id" id="actor_id">
+        <option value="test">Select an Actor ID</option>
         {{#each data}}
-        <option value="{{this.award_id}}">{{this.award_title}}</option>
+        <option value="{{this.actor_id}}">{{this.actor_id}}</option>
         {{/each}}
     </select>
 
-    <label for="input_movie_id">Movie: </label>
-    <select name="input_movie_id" id="input-movie_id-update">
-        <option>Select a Movie</option>
-        {{#each Movies}}
-        <option value="{{this.movie_id}}">{{this.movie_name}}</option>
-        {{/each}}
-    </select>
+    <label for="input-actor-fname">First Name: </label>
+    <input type="text" name="input-actor-fname" id="input-actor-fname">
+    
+    <label for="input-actor-lname">Last Name: </label>
+    <input type="text" name="input-actor-lname" id="input-actor-lname">
+
+
     <input type="submit">
 
 </form>
 
-<script src="./js/update_award.js"></script>
+<script src="./js/update_actor.js"></script>

@@ -63,6 +63,8 @@ app.get('/Movie_Streaming_Services', function(req, res) {
     });
 });
 
+
+
 app.get('/Awards', function(req, res)
     {  
         // Declare Query 1
@@ -336,6 +338,42 @@ app.post('/add-actor-form', function(req, res){
         }
     })
 })
+
+app.put('/put-actor-ajax', function(req,res,next){
+    let data = req.body;
+  
+    let actor_id = parseInt(data.actor_id);
+    let fname_id = data.fname_id;
+    let lname_id = data.lname_id;
+  
+
+    let queryUpdateActor_id = `UPDATE Actors SET actor_fname = ?, actor_lname = ? WHERE Actors.actor_id = ?`;
+    let selectActor_id = `SELECT * FROM Actors WHERE actor_id = ?`
+          // Run the 1st query
+          db.pool.query(queryUpdateActor_id, [fname_id, lname_id, actor_id], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              // If there was no error, we run our second query and return that data so we can use it to update the people's
+              // table on the front-end
+              else
+              {
+                  // Run the second query
+                  db.pool.query(selectActor_id, [fname_id, lname_id], function(error, rows, fields) {
+  
+                      if (error) {
+                          console.log(error);
+                          res.sendStatus(400);
+                      } else {
+                          res.send(rows);
+                      }
+                  })
+              }
+  })});
 
 
 app.listen(PORT, function() {
