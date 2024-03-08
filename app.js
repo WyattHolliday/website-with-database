@@ -42,13 +42,13 @@ app.post('/add-movie-form', function(req, res){
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
-    let movie = parseInt(data['ïnput-movie']);
+    let movie = parseInt(data['input-movie']);
     if (isNaN(movie)) {
         movie = 'NULL'
     }
 
     // Create the query and run it on the database
-    query1 = `INSERT INTO Movies (movie_name, rating, genre, minute, additional_cost) VALUES ('${data['input-movie_name']}', ${data['input-rating']}, ${data['input-genre']}, '${data['input-minute']}', '${data['input-additional_cost']}')`;
+    query1 = `INSERT INTO Movies (movie_name, rating, genre, minute, additional_cost) VALUES ('${data['input-movie_name']}', ${data['input-rating']}, '${data['input-genre']}', '${data['input-minute']}', '${data['input-additional_cost']}')`;
     db.pool.query(query1, function(error, rows, fields){
 
         // Check to see if there was an error
