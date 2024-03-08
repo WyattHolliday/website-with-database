@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-const PORT = 3334;
+const PORT = 3333;
 
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
@@ -42,13 +42,13 @@ app.post('/add-movie-form', function(req, res){
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
-    let movie = parseInt(data['Input-movie']);
+    let movie = parseInt(data['input-movie']);
     if (isNaN(movie)) {
         movie = 'NULL'
     }
 
     // Create the query and run it on the database
-    query1 = `INSERT INTO Movies (movie_name, rating, genre, minute, additional_cost) VALUES ('${data['input-movie_name']}', ${data['input-rating']}, ${data['input-genre']}, '${data['input-minute']}', '${data['input-additional_cost']}')`;
+    query1 = `INSERT INTO Movies (movie_name, rating, genre, minute, additional_cost) VALUES ('${data['input-movie_name']}', ${data['input-rating']}, '${data['input-genre']}', '${data['input-minute']}', '${data['input-additional_cost']}')`;
     db.pool.query(query1, function(error, rows, fields){
 
         // Check to see if there was an error
@@ -527,6 +527,52 @@ app.post('/add-actor-form', function(req, res){
         }
     })
 })
+
+app.put('/put-actor-ajax', function(req,res,next){
+    let data = req.body;
+  
+    let actor_id = parseInt(data.actor_id);
+    let fname_id = data.fname_id;
+    let lname_id = data.lname_id;
+  
+
+    let queryUpdateActor_id = `UPDATE Actors SET actor_fname = ?, actor_lname = ? WHERE Actors.actor_id = ?`;
+    let selectActor_id = `SELECT * FROM Actors WHERE actor_id = ?`
+          // Run the 1st query
+          db.pool.query(queryUpdateActor_id, [fname_id, lname_id, actor_id], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              // If there was no error, we run our second query and return that data so we can use it to update the people's
+              // table on the front-end
+              else
+              {
+                  // Run the second query
+                  db.pool.query(selectActor_id, [fname_id, lname_id], function(error, rows, fields) {
+  
+                      if (error) {
+                          console.log(error);
+                          res.sendStatus(400);
+                      } else {
+                          res.send(rows);
+                      }
+                  })
+              }
+  })});
+
+app.get('/Movies_Actors', function(req, res) {
+    query1 = "SELECT * FROM Movies_Actors;";
+
+    db.pool.query(query1, function(error, rows, fields){    // Execute the query
+
+        res.render('Movies_Actors', {data: rows});                  // Render the index.hbs file, and also send the renderer
+    })  
+
+});
 
 
 app.listen(PORT, function() {
