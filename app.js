@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-const PORT = 3332;
+const PORT = 3334;
 
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
@@ -21,18 +21,90 @@ app.get('/Index', function(req,res){
 
 
 app.get('/Movies', function(req, res) {
-    const query = 'SELECT * FROM Actors';
+    let query1;
 
-    db.pool.query(query, function(err, actors, fields) {
-        if (err) {
-            console.error('Error fetching actors:', err);
-            res.status(500).send('Internal Server Error');
-            return;
+    if (req.query.movie_title === undefined)
+    {
+        query1 = "SELECT * FROM Movies;";
+    }
+    else
+    {
+        query1 = `SELECT * FROM Movies WHERE movie_name LIKE "${req.query.movie_title}%"`;
+    }
+
+    db.pool.query(query1, function(error, rows, fields){
+        let Movies = rows;
+        return res.render('Movies', {data: Movies});
+    })
+});
+
+app.post('/add-movie-form', function(req, res){
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+    let movie = parseInt(data['ïnput-movie']);
+    if (isNaN(movie)) {
+        movie = 'NULL'
+    }
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Movies (movie_name, rating, genre, minute, additional_cost) VALUES ('${data['input-movie_name']}', ${data['input-rating']}, ${data['input-genre']}, '${data['input-minute']}', '${data['input-additional_cost']}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+
+        // If there was no error, we redirect back to our root route, which automatically runs the SELECT * FROM bsg_people and
+        // presents it on the screen
+        else
+        {
+            res.redirect('/Movies');
+        }
+    })
+})
+
+app.delete('/delete-movie-ajax/', function(req,res,next){
+    let data = req.body;
+    let movie_id = parseInt(data.movie_id);
+    let deleteMovie = `DELETE FROM Movies WHERE movie_id = ?`;
+                // Run the  query
+    db.pool.query(deleteMovie, [movie_id], function(error, rows, fields) {
+
+        if (error) {
+            console.log(error);
+            res.sendStatus(400);
+        } else {
+            res.sendStatus(204);
         }
         
-        res.render('Movies', { actors });
-    });
-});
+  })});
+
+  app.put('/put-movie-ajax', function(req,res,next){
+    let data = req.body;
+    
+    let movie_id = parseInt(data.movie_id);
+    let movie_name = data.movie_name;
+    let rating = parseInt(data.rating);
+    let genre = data.genre;
+    let minute = parseInt(data.minute);
+    let additional_cost = parseInt(data.additional_cost);
+
+    let queryUpdateMovie_id = `UPDATE Movies SET movie_name = ?, rating = ?, genre = ?, minute = ?, additional_cost = ? WHERE Movies.movie_id = ?`;
+          // Run the 1st query
+        db.pool.query(queryUpdateMovie_id, [movie_name, rating, genre, minute, additional_cost, movie_id], function(error, rows, fields){
+            if (error) {
+                // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                console.log(error);
+                res.sendStatus(400);
+            } else {
+                res.send(rows);
+            }
+  })});
 
 app.get('/Streaming_Services', function(req, res) {
     const query = 'SELECT * FROM Actors';
