@@ -51,7 +51,7 @@
 
 <!-- /views/index.hbs -->
 <h2>Adding Data using an HTML form</h2>
-<p>To add a new award, please enter their information below nad click `Submit`!</p>
+<p>To add a new award, please enter their information below and click `Submit`!</p>
 <form id="add-actor-form-ajax" method="POST" action="/add-actor-form">
 
     <label for="input-fname">First Name: </label>
@@ -70,7 +70,7 @@
     <select name="input_actor_id" id="actor_id">
         <option value="test">Select an Actor ID</option>
         {{#each data}}
-        <option value="{{this.actor_id}}">{{this.actor_id}}</option>
+        <option value="{{this.actor_id}}">{{this.actor_fname}} {{this.actor_lname}}</option>
         {{/each}}
     </select>
 
