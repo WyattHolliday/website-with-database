@@ -64,7 +64,7 @@ updateMovieForm.addEventListener("submit", function (e) {
 
     // Send the request and wait for the response
     xhttp.send(JSON.stringify(data));
-    // location.reload()
+    location.reload()
 
 })
 
@@ -73,7 +73,7 @@ function updateRow(data, movie_id){
     let parsedData = JSON.parse(data);
     
     let table = document.getElementById("movie-table");
-    console.log("table", table, movie_id)
+    
     for (let i = 0, row; row = table.rows[i]; i++) {
        //iterate through rows
        //rows would be accessed using the "row" variable assigned in the for loop
@@ -86,7 +86,7 @@ function updateRow(data, movie_id){
             let td = updateRowIndex.getElementsByTagName("td")[3];
 
             // Reassign homeworld to our value we updated to
-            td.innerHTML = parsedData[0].movie_title; 
+            td.innerHTML = parsedData[0].movie_name; 
        }
     }
 

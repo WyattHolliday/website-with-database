@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-const PORT = 3333;
+const PORT = 3334;
 
 app.engine('.hbs', engine({ extname: '.hbs' }));
 app.set('view engine', '.hbs');
@@ -86,7 +86,7 @@ app.delete('/delete-movie-ajax/', function(req,res,next){
 
   app.put('/put-movie-ajax', function(req,res,next){
     let data = req.body;
-    console.log("data:", data)
+    
     let movie_id = parseInt(data.movie_id);
     let movie_name = data.movie_name;
     let rating = parseInt(data.rating);
