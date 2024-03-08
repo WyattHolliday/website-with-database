@@ -129,19 +129,6 @@ app.delete('/delete-movie-ajax/', function(req,res,next){
             }
   })});
 
-app.get('/Streaming_Services', function(req, res) {
-    const query = 'SELECT * FROM Actors';
-
-    db.pool.query(query, function(err, actors, fields) {
-        if (err) {
-            console.error('Error fetching actors:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-        
-        res.render('Streaming_Services', { actors });
-    });
-});
 
 
 app.get('/Movie_Streaming_Services', function(req, res) {
@@ -573,6 +560,123 @@ app.get('/Movies_Actors', function(req, res) {
     })  
 
 });
+
+
+
+  app.get('/Streaming_Services', function(req, res)
+  {  
+
+    let query1;
+
+    if (req.query.streaming_service === undefined)
+    {
+        query1 = "SELECT * FROM Streaming_Services;";
+    }
+
+    // If there is a query string, we assume this is a search, and return desired results
+    else
+    {
+        query1 = `SELECT * FROM Streaming_Services WHERE service LIKE "${req.query.streaming_service}%"`
+    }
+
+
+      db.pool.query(query1, function(error, rows, fields){    // Execute the query
+
+          res.render('Streaming_Services', {data: rows});                  // Render the index.hbs file, and also send the renderer
+      })                                                      // an object where 'data' is equal to the 'rows' we
+  }); 
+
+  app.post('/add-streaming_service-form', function(req, res){
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Streaming_Services (service, cost) VALUES ('${data['input-service']}', ${data['input-cost']})`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+
+        // If there was no error, we redirect back to our root route, which automatically runs the SELECT * FROM bsg_people and
+        // presents it on the screen
+        else
+        {
+            res.redirect('/Streaming_Services');
+        }
+    })
+})
+
+app.delete('/delete-service-ajax/', function(req,res,next){
+    let data = req.body;
+    let service_id = parseInt(data.service_id);
+    let deleteService = `DELETE FROM Streaming_Services WHERE service_id = ?`;
+    let deleteIntersection = `DELETE FROM Movies_Streaming_Services WHERE service_id = ?`
+
+    db.pool.query(deleteIntersection, [service_id], function(error,rows,fields){
+        if (error) {
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error);
+            res.sendStatus(400);
+            }
+
+        else {
+            db.pool.query(deleteService, [service_id], function(error, rows, fields) {
+
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                } else {
+                    res.sendStatus(204);
+                }
+                
+            })
+
+        }
+    })
+    
+});
+
+app.put('/put-service-ajax', function(req,res,next){
+    let data = req.body;
+  
+    let service_id = parseInt(data.service_id);
+    let service_name_id = data.service_name_id;
+    let cost_id = parseInt(data.cost_id);
+    
+
+    let queryUpdateService_id = `UPDATE Streaming_Services SET service = ?, cost = ? WHERE Streaming_Services.service_id = ?`;
+    let selectService_id = `SELECT * FROM Streaming_Services WHERE service_id = ?`
+          // Run the 1st query
+        
+
+            db.pool.query(queryUpdateService_id, [service_name_id, cost_id, service_id], function(error, rows, fields){
+                if (error) {
+                // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                console.log(error);
+                res.sendStatus(400);
+                }
+                // If there was no error, we run our second query and return that data so we can use it to update the people's
+                // table on the front-end
+                else
+                {
+                    // Run the second query
+                    db.pool.query(selectService_id, [service_name_id, cost_id], function(error, rows, fields) {
+    
+                        if (error) {
+                            console.log(error);
+                            res.sendStatus(400);
+                        } else {
+                            res.send(rows);
+                        }
+                    })
+                }
+  })});
 
 
 app.listen(PORT, function() {
