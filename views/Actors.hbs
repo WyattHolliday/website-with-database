@@ -37,7 +37,7 @@
 </table>
 <script src="./js/delete_actor.js"></script>
 
-<h3>Search for Actor name by using the field below. Partial names are OK too!</h3>
+<h3>Search for a Actor by using the field below.</h3>
 <form id="search-actor-html" method='GET' action='/Actors'>
     <label for="input-lname">Search by Actor Last Name: </label>
     <input type="text" name="lname" id="input-lname-html-search">
@@ -49,7 +49,7 @@
 
 
 <!-- /views/index.hbs -->
-<h3>To add a new award, please enter their information below and click `Submit`!</h3>
+<h3>To add a new Actor, please enter their information below and click Submit!</h3>
 <form id="add-actor-form-ajax" method="POST" action="/add-actor-form">
 
     <label for="input-fname">First Name: </label>
@@ -62,7 +62,7 @@
 </form>
 {{!-- <script src="./js/add_award.js"></script> --}}
 
-<h2>To update an Actor select one then fill out all the information</h2>
+<h3>To update an Actor select one then fill out all the information</h3>
 <form id="update-actor-form-ajax">
     <label for="input_actor_id">Actor to update: </label>
     <select name="input_actor_id" id="actor_id">

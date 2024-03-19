@@ -27,7 +27,7 @@
     </table>
     <script src="./js/delete_movie_actors.js"></script>
 
-    <h3>To add a new intersection, please enter their information below and click `Submit`!</h3>
+    <h3>To add a new intersection, please enter their information below and click Submit!</h3>
     <form id="add-movie_actor-form-ajax" method="POST" action="/add-movie_actor-form">
 
         <select name="input_movie" id="mySelect-add-movie">
@@ -38,7 +38,7 @@
         </select>
 
         <select name="input_actor" id="mySelect-add-actor">
-            <option value="select">Select a Actor</option>
+            <option value="select">Select an Actor</option>
             {{#each Actor}}
             <option value="{{this.actor_id}}">{{this.actor_fname}} {{this.actor_lname}}</option>
             {{/each}}
@@ -66,7 +66,7 @@
         </select>
 
         <select name="input_service" id="mySelect-update-actor">
-            <option value="select">Select a Actor</option>
+            <option value="select">Select an Actor</option>
             {{#each Actor}}
             <option value="{{this.actor_id}}">{{this.actor_fname}} {{this.actor_lname}}</option>
             {{/each}}
