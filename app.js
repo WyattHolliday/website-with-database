@@ -435,7 +435,7 @@ app.delete('/delete-award-ajax/', function(req,res,next){
 
 app.get('/Actors', function(req, res) {
     let query1 
-    
+
     if (req.query.lname === undefined)
     {
         query1 = "SELECT * FROM Actors;";
@@ -556,16 +556,6 @@ app.put('/put-actor-ajax', function(req,res,next){
               }
   })});
 
-app.get('/Movies_Actors', function(req, res) {
-    query1 = "SELECT * FROM Movies_Actors;";
-
-    db.pool.query(query1, function(error, rows, fields){    // Execute the query
-
-        res.render('Movies_Actors', {data: rows});                  // Render the index.hbs file, and also send the renderer
-    })  
-
-});
-
 
 
   app.get('/Streaming_Services', function(req, res)
@@ -681,6 +671,110 @@ app.put('/put-service-ajax', function(req,res,next){
                         }
                     })
                 }
+  })});
+
+
+  app.get('/Movies_Actors', function(req, res) {
+    const queryMA = "SELECT * FROM Movies_Actors;";
+    const queryM = "SELECT * FROM Movies;";
+    const queryA = "SELECT * FROM Actors;";
+
+    db.pool.query(queryMA, function(error, rows, fields){
+        let Movies_Actors = rows;
+        db.pool.query(queryM, function(error, rows, fields){
+
+            let Movies = rows;
+            let moviemap = {};
+            Movies.forEach(movie => {
+                moviemap[movie.movie_id] = movie.movie_name;
+            });
+
+            Movies_Actors = Movies_Actors.map(movies_actors => {
+                return Object.assign(movies_actors, {movie_id: moviemap[movies_actors.movie_id]});
+            });
+
+            db.pool.query(queryA, function(error, rows, fields){
+
+                let Actors = rows;
+                let actormap = {};
+                Actors.forEach(actor => {
+                    actormap[actor.actor_id] = actor.actor_fname + ' ' + actor.actor_lname;
+                });
+
+                Movies_Actors = Movies_Actors.map(movies_actors => {
+                    return Object.assign(movies_actors, {actor_id: actormap[movies_actors.actor_id]});
+                });
+
+                return res.render('Movies_Actors', {
+                    data: Movies_Actors,
+                    Movie: Movies,
+                    Actor: Actors
+                });
+            });
+        });
+    });
+});
+
+app.post('/add-movie_actor-form', function(req, res){
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Movies_Actors (movie_id, actor_id) VALUES ('${data.input_movie}', '${data.input_actor}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+
+        // If there was no error, we redirect back to our root route, which automatically runs the SELECT * FROM bsg_people and
+        // presents it on the screen
+        else
+        {
+            res.redirect('/Movies_Actors');
+        }
+    })
+});
+
+
+app.put('/put-movies-actors-ajax', function(req,res,next){
+    let data = req.body;
+    
+    let movie_id = parseInt(data.movie_id);
+    let actor_id = parseInt(data.actor_id);
+    let movies_actors_id = parseInt(data.movies_actors_id);
+
+    let queryUpdateMoviesActorsid = `UPDATE Movies_Actors SET movie_id = ?, actor_id = ? WHERE Movies_Actors.movies_actors_id = ?`;
+          // Run the 1st query
+        db.pool.query(queryUpdateMoviesActorsid, [movie_id, actor_id, movies_actors_id], function(error, rows, fields){
+            if (error) {
+                // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                console.log(error);
+                res.sendStatus(400);
+            } else {
+                console.log("sending rows", rows)
+                res.send(rows);
+            }
+  })});
+
+  app.delete('/delete-movies-actors-ajax', function(req,res,next){
+    let data = req.body;
+    let movies_actors_id = parseInt(data.movies_actors_id);
+    let deleteMoviesActors = `DELETE FROM Movies_Actors WHERE movies_actors_id = ?`;
+                // Run the  query
+    db.pool.query(deleteMoviesActors, [movies_actors_id], function(error, rows, fields) {
+
+        if (error) {
+            console.log(error);
+            res.sendStatus(400);
+        } else {
+            res.sendStatus(204);
+        }
+        
   })});
 
 

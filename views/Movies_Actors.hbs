@@ -1,167 +1,77 @@
-
 <body>
+    <header>
 
-    <h1> Movies-Actors Intersection Table </h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        Movie Actors ID
-                    </th>
-                    <th>
-                        actor ID
-                    </th>
-                    <th>
-                        movie ID
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        1
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        2
-                    </td>
+    </header>
+    <h1> Movies Actors Intersection Table </h1>
+    <table id="movie-actors-table">
+        <thead>
+            <tr>
+                {{#each data.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{#each data}}
+        <tr>
+            <td>{{this.movies_actors_id}}</td>
+            <td>{{this.actor_id}}</td>
+            <td>{{this.movie_id}}</td>
+            <td><button onclick="deleteMoviesActors({{this.movies_actors_id}})">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+    </table>
+    <script src="./js/delete_movie_actors.js"></script>
 
-                </tr>
-                <tr>
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        3
-                    </td>
+    <h3>To add a new intersection, please enter their information below and click `Submit`!</h3>
+    <form id="add-movie_actor-form-ajax" method="POST" action="/add-movie_actor-form">
 
-                </tr>
-            </tbody>
+        <select name="input_movie" id="mySelect-add-movie">
+            <option value="select">Select a Movie</option>
+            {{#each Movie}}
+            <option value="{{this.movie_id}}">{{this.movie_name}}</option>
+            {{/each}}
+        </select>
 
-        </table>
-
-
-
-
-        <h2>Add an Intersection</h2>
-        <form>
-            <label> Actor </label>
-            <select>
-            <option>
-                Vin Diesel
-            </option>
-            <option>
-                Al Pacino
-            </option>
-            <option>
-                Bradd Pitt
-            </option>
-            </select> <br>
+        <select name="input_actor" id="mySelect-add-actor">
+            <option value="select">Select a Actor</option>
+            {{#each Actor}}
+            <option value="{{this.actor_id}}">{{this.actor_fname}} {{this.actor_lname}}</option>
+            {{/each}}
+        </select>
+        
+        <input type="submit">
+    </form>
     
-            <label> Movies </label>
-            <select>
-            <option>
-                Fast and Furious
-            </option>
-            <option>
-                The Godfather
-            </option>
-            <option>
-                Fight Club
-            </option>
-            </select> <br>
+    <h3>To update an intersection select one then fill out all the information</h3>
+    <form id="update-movies-actors-form-ajax">
+        <label for="input_movies_actors_title">Intersection to update: </label>
 
-            <button>
-                Confirm
-            </button>
+        <select name="input_movies_actors_title" id="mySelect-update-movies-actors">
+            <option value="select">Select an Intersection</option>
+            {{#each data}}
+            <option value="{{this.movies_actors_id}}">{{this.movie_id}} - {{this.actor_id}} </option>
+            {{/each}}
+        </select>
 
+        <select name="input_movie" id="mySelect-update-movie">
+            <option value="select">Select a Movie</option>
+            {{#each Movie}}
+            <option value="{{this.movie_id}}">{{this.movie_name}}</option>
+            {{/each}}
+        </select>
 
-
-
-
-            <h2>Update Intersection</h2>
-            <form>
-                <label> Movie Actor </label>
-                <select>
-                <option>
-                    1
-                </option>
-                <option>
-                    2
-                </option>
-                <option>
-                    3
-                </option>
-                </select> <br>
-
-                <label> Movie </label>
-                <select>
-                <option>
-                    1
-                </option>
-                <option>
-                    2
-                </option>
-                <option>
-                    3
-                </option>
-                </select> <br>
-        
-                <label> Actor </label>
-                <select>
-                <option>
-                    1
-                </option>
-                <option>
-                    2
-                </option>
-                <option>
-                    3
-                </option>
-                </select> <br>
-        
-                <button>
-                    Update
-                </button>
-            </form>
-
-            <h2>Delete an Intersection</h2>
-            <form>
-                <form>
-                    <label> Movies Actor </label>
-                    <select>
-                    <option>
-                        1
-                    </option>
-                    <option>
-                        2
-                    </option>
-                    <option>
-                        3
-                    </option>
-                    </select><br><br>
-                <button>
-                    Delete
-                </button>
-
-            </form>
-
-        </form>
-
+        <select name="input_service" id="mySelect-update-actor">
+            <option value="select">Select a Actor</option>
+            {{#each Actor}}
+            <option value="{{this.actor_id}}">{{this.actor_fname}} {{this.actor_lname}}</option>
+            {{/each}}
+        </select>
+        <input type="submit">
+    </form>
+    <script src="./js/update_movie_actor.js"></script>
 </body>
