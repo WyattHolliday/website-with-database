@@ -248,22 +248,22 @@ ALTER TABLE `Streaming_Services`
 -- Constraints for table `Awards`
 --
 ALTER TABLE `Awards`
-  ADD CONSTRAINT `Awards_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `Movies` (`movie_id`),
-  ADD CONSTRAINT `Awards_ibfk_2` FOREIGN KEY (`actor_id`) REFERENCES `Actors` (`actor_id`);
+  ADD CONSTRAINT `fk_awards_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `Movies` (`movie_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_awards_actor_id` FOREIGN KEY (`actor_id`) REFERENCES `Actors` (`actor_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `Movies_Actors`
 --
 ALTER TABLE `Movies_Actors`
-  ADD CONSTRAINT `Movies_Actors_ibfk_1` FOREIGN KEY (`actor_id`) REFERENCES `Actors` (`actor_id`),
-  ADD CONSTRAINT `Movies_Actors_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `Movies` (`movie_id`);
+  ADD CONSTRAINT `fk_movies_actors_actor_id` FOREIGN KEY (`actor_id`) REFERENCES `Actors` (`actor_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_movies_actors_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `Movies` (`movie_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `Movies_Streaming_Services`
 --
 ALTER TABLE `Movies_Streaming_Services`
-  ADD CONSTRAINT `Movies_Streaming_Services_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `Movies` (`movie_id`),
-  ADD CONSTRAINT `Movies_Streaming_Services_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `Streaming_Services` (`service_id`);
+  ADD CONSTRAINT `fk_movies_services_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `Movies` (`movie_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_movies_services_service_id` FOREIGN KEY (`service_id`) REFERENCES `Streaming_Services` (`service_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
